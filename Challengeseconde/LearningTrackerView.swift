@@ -117,8 +117,8 @@ struct LearningTrackerView: View {
                                                 .frame(width: 44, height: 44)
                                             
                                             Text("\(calendar.component(.day, from: date))") // رقم اليوم في الشهر
-                                                .foregroundColor(dayForeground(for: date))
-                                                .font(.system(size: 20, weight: isToday(date) ? .bold : .regular, design: .default))
+                                                .foregroundColor(isToday(date) && dayStatuses[calendar.component(.day, from: date)] == nil ? Color.orange : .white)
+                                                .font(.system(size: 20, weight: isToday(date) && dayStatuses[calendar.component(.day, from: date)] == nil ? .regular : .bold))
                                                                                         }
                                     }
                                 }
@@ -174,30 +174,31 @@ struct LearningTrackerView: View {
                     ZStack {
                         Circle()
                             .fill(selectedDayStatus == "learned" ? Color.darkorange2 :
-                                  selectedDayStatus == "frozen" ? Color.darkblue2:
+                                  selectedDayStatus == "frozen" ? Color.darkblue2 :
                                   Color.orange2)
                             .frame(width: 320, height: 320)
+                            .contentShape(Circle()) // ضبط منطقة التفاعل لتشمل الدائرة بأكملها
                             .onTapGesture {
-                                toggleDayStatus() // تغيير حالة اليوم بين التعلم والتجميد
+                                if selectedDayStatus == "log" { // يسمح بالضغط فقط إذا كانت الحالة "log"
+                                    logTodayAsLearned()
+                                }
                             }
                         
                         // عرض النص بناءً على الحالة اليومية الحالية
-                        Text(selectedDayStatus == "learned" ? "Learned \n Today" :
-                             selectedDayStatus == "frozen" ? "Day \n Freezed" :
-                             "Log Today\nas Learned")
-                        .font(.largeTitle)
-                            .bold()
-                            .multilineTextAlignment(.center) // جعل النص في الوسط
-                            .foregroundColor(selectedDayStatus == "learned" ? Color.orange :
-                                             selectedDayStatus == "frozen" ? Color.blue :
-                                             Color.black) // تغيير لون النص بناءً على الحالة
+                        Text(selectedDayStatus == "learned" ? "Today \n Learned" :
+                              selectedDayStatus == "frozen" ? "Day \n Freezed" :
+                              "Log Today\nas Learned")
+                            .font(.system(size: 41, weight: .semibold, design: .default))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(selectedDayStatus == "learned" ? Color.orange2 :
+                                             selectedDayStatus == "frozen" ? Color.blue2 :
+                                             Color.black)
                     }
-                    
                     // زر لتجميد اليوم
                     Button(action: freezeToday) {
                         Text("Freeze day")
                             .frame(width: 162, height: 52)
-                            .background(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.gray : Color.babyblue)
+                            .background(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.darkgrey2 : Color.babyblue)
                             .foregroundColor(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.white : Color.blue2)
                             .cornerRadius(10)
                     }
@@ -219,6 +220,7 @@ struct LearningTrackerView: View {
                     resetStreak() // إعادة تعيين السلسلة عند تغيير المدة
                 }
             }
+            .navigationBarBackButtonHidden(true)
         }
     }
     
@@ -302,9 +304,10 @@ struct LearningTrackerView: View {
     }
     
     // تجميد اليوم الحالي إذا لم يتم تجاوز الحد الأقصى
+    // تجميد اليوم الحالي إذا لم يتم تجاوز الحد الأقصى ولم يكن مجمداً مسبقاً
     private func freezeToday() {
         let today = calendar.component(.day, from: Date())
-        if frozenDays < availableFreezes() {
+        if frozenDays < availableFreezes(), dayStatuses[today] != "frozen" {
             selectedDayStatus = "frozen"
             dayStatuses[today] = "frozen"
             frozenDays += 1
