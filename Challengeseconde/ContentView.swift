@@ -8,7 +8,7 @@ struct ContentView: View {
             ZStack {
                 Color.black.ignoresSafeArea()
                 
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 13) {
                     HStack {
                         Spacer()
                         iconView
@@ -20,12 +20,13 @@ struct ContentView: View {
                         .font(.largeTitle)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
-                        .padding(.bottom, 4)
-                    
+//                        .padding(.bottom, 4)
+//
                     Text("This app will help you learn everyday")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding(.bottom, 20)
+                    .padding(.top, 0)
+                        .baselineOffset(20)
                     
                     Text("I want to learn")
                         .font(.title3)

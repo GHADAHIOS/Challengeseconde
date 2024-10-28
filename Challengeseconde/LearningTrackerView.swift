@@ -1,45 +1,47 @@
 import SwiftUI
 
 struct LearningTrackerView: View {
-    var learningSubject: String // الهدف المدخل
-    var learningDuration: String // مدة التعلم: أسبوع، شهر، أو سنة
-    @State private var streakDays = 0 // يبدأ العداد من الصفر
+    var learningSubject: String // الهدف التعليمي المدخل من المستخدم
+    var learningDuration: String // مدة التعلم، مثل: أسبوع، شهر، أو سنة
+    @State private var streakDays = 0 // عدد الأيام المتتالية (يبدأ من الصفر)
     @State private var frozenDays = 0 // عدد الأيام المجمدة
     @State private var selectedDayStatus: String = "log" // الحالة اليومية (تعلم، مجمد، تسجيل)
-    @State private var currentWeek = 0 // الأسبوع الحالي
-    @State private var currentDate = Date() // الشهر الحالي
-    @State private var dayStatuses: [Int: String] = [:] // حالات الأيام السابقة
-    private let calendar = Calendar.current
+    @State private var currentWeek = 0 // رقم الأسبوع الحالي
+    @State private var currentDate = Date() // التاريخ الحالي (يتم استخدامه للتنقل بين الأسابيع)
+    @State private var dayStatuses: [Int: String] = [:] // حالات الأيام السابقة بناءً على التاريخ
+    private let calendar = Calendar.current // استخدام التقويم الحالي للنظام
 
     let weeksInMonth = 4 // عدد الأسابيع المعروضة في الشهر
 
-    // تنسيق التاريخ في الأعلى (مثل: "Saturday,26Oct")
+    // تنسيق التاريخ لعرض اليوم الكامل والتاريخ، مثل: "Saturday, 26 Oct"
     let topDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE,ddMMM"
+        formatter.dateFormat = "EEEE, dd MMM"
         return formatter
     }()
     
-    // تنسيق التاريخ في الأسفل (الشهر والسنة فقط)
+    // تنسيق الشهر والسنة فقط، مثل: "October 2024"
     let monthYearFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy" // لعرض الشهر والسنة فقط مثل "October 2024"
+        formatter.dateFormat = "MMMM yyyy"
         return formatter
     }()
     
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
+                Color.black.edgesIgnoringSafeArea(.all) // خلفية سوداء تغطي كامل الشاشة
 
                 VStack(spacing: 20) {
                     // الجزء العلوي (التاريخ والهدف)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("\(currentDate, formatter: topDateFormatter)")
+                        // عرض اليوم الحالي مع التاريخ الكامل باستخدام التنسيق المحدد
+                        Text(currentDate, formatter: topDateFormatter)
                             .foregroundColor(.gray)
                             .font(.subheadline)
 
                         HStack {
+                            // عرض نص الهدف التعليمي بعنوان كبير ولون أبيض
                             Text("Learning \(learningSubject)")
                                 .font(.largeTitle)
                                 .bold()
@@ -47,14 +49,14 @@ struct LearningTrackerView: View {
 
                             Spacer()
 
-                            // زر الانتقال إلى UpdateLearningGoalView
+                            // زر للتنقل إلى شاشة UpdateLearningGoalView لتحديث الهدف ومدة التعلم
                             NavigationLink(destination: UpdateLearningGoalView()) {
                                 ZStack {
                                     Circle()
                                         .fill(Color(red: 44/255, green: 44/255, blue: 49/255))
                                         .frame(width: 60, height:60, alignment: .center)
 
-                                    Text("🔥")
+                                    Text("🔥") // رمز الحماس أو النشاط
                                         .font(.system(size: 30))
                                 }
                             }
@@ -66,21 +68,26 @@ struct LearningTrackerView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.black)
-                            .frame(width: 360, height: 220)
+                            .frame(width: 367, height: 208)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                    .stroke(Color.gray.opacity(0.4), lineWidth: 1)
                             )
 
                         VStack(spacing: 10.0) {
                             // جزء الشهر والسنة وأزرار التنقل
                             HStack {
-                                Text("\(currentDate, formatter: monthYearFormatter)")
+                                Text(currentDate, formatter: monthYearFormatter) // عرض الشهر والسنة
                                     .font(.headline)
                                     .fontWeight(.semibold)
                                     .foregroundColor(.white)
+
+                                Image(systemName: "chevron.right") // رمز السهم لليمين
+                                    .foregroundColor(.orange)
+
                                 Spacer()
                                 
+                                // أزرار للتنقل بين الأسابيع السابقة والقادمة
                                 HStack(spacing: 25) {
                                     Button(action: previousWeek) {
                                         Image(systemName: "chevron.left")
@@ -95,24 +102,24 @@ struct LearningTrackerView: View {
                             }
                             .padding(.horizontal)
 
-                            // عرض أيام الأسبوع حسب الأسبوع الحالي
-                            HStack(spacing: 22) {
-                                ForEach(weekDays(), id: \.self) { day in
+                            // عرض أيام الأسبوع مع تمييز اليوم الحالي
+                            HStack(spacing: 7) {
+                                ForEach(weekDays(), id: \.self) { date in
                                     VStack {
-                                        Text(dayOfWeek(for: day))
-                                            .foregroundColor(.white)
+                                        Text(dayOfWeek(for: date)) // عرض اختصار اليوم (مثل: SAT, SUN)
+                                            .foregroundColor(isToday(date) ? .white : .gray)
                                             .font(.footnote)
-                                            .fontWeight(isToday(day) ? .bold : .semibold)
+                                            .fontWeight(isToday(date) ? .bold : .semibold)
                                         
                                         ZStack {
                                             Circle()
-                                                .fill(dayBackground(for: day))
-                                                .frame(width: 28, height: 28)
+                                                .fill(dayBackground(for: date)) // خلفية اليوم بناءً على حالته
+                                                .frame(width: 44, height: 44)
                                             
-                                            Text("\(day)")
-                                                .foregroundColor(dayForeground(for: day))
-                                                .font(.system(size: 20, weight: isToday(day) ? .bold : .regular, design: .default))
-                                        }
+                                            Text("\(calendar.component(.day, from: date))") // رقم اليوم في الشهر
+                                                .foregroundColor(dayForeground(for: date))
+                                                .font(.system(size: 20, weight: isToday(date) ? .bold : .regular, design: .default))
+                                                                                        }
                                     }
                                 }
                             }
@@ -123,41 +130,42 @@ struct LearningTrackerView: View {
                                 .background(Color.gray)
                                 .padding(.vertical, 5)
 
+                            // عرض حالة الأيام المتتالية وعدد الأيام المجمدة
                             HStack(spacing: 50) {
                                 VStack {
                                     HStack {
-                                        Text("\(streakDays)")
+                                        Text("\(streakDays)") // عرض عدد الأيام المتتالية
                                             .font(.title)
                                             .fontWeight(.bold)
                                             .foregroundColor(.white)
-                                        Text("🔥")
+                                        Text("🔥") // رمز الحماس لعدد الأيام المتتالية
+                                            .font(.largeTitle)
                                             .foregroundColor(.orange)
                                     }
-                                    Text("Day streak")
+                                    Text("Day streak") // تسمية العداد
                                         .font(.footnote)
                                         .foregroundColor(.gray)
                                 }
                                 
                                 Divider()
-                                    .frame(width: 1, height: 40)
+                                    .frame(width: 1, height: 60)
                                     .background(Color.gray)
                                 
                                 VStack {
                                     HStack {
-                                        Text("\(frozenDays)")
+                                        Text("\(frozenDays)") // عرض عدد الأيام المجمدة
                                             .font(.title)
                                             .fontWeight(.bold)
                                             .foregroundColor(.white)
-                                        Text("🧊")
+                                        Text("🧊") // رمز التجميد
                                             .foregroundColor(.blue)
+                                            .font(.largeTitle)
                                     }
-                                    Text("Day frozen")
+                                    Text("Day frozen") // تسمية الأيام المجمدة
                                         .font(.footnote)
                                         .foregroundColor(.gray)
                                 }
                             }
-                            .padding(.horizontal)
-                            .padding(.top, 5)
                         }
                         .padding()
                     }
@@ -170,23 +178,26 @@ struct LearningTrackerView: View {
                                   Color.orange)
                             .frame(width: 320, height: 320)
                             .onTapGesture {
-                                if selectedDayStatus == "log" {
-                                    logTodayAsLearned()
-                                }
+                                toggleDayStatus() // تغيير حالة اليوم بين التعلم والتجميد
                             }
                         
+                        // عرض النص بناءً على الحالة اليومية الحالية
                         Text(selectedDayStatus == "learned" ? "Learned Today" :
                              selectedDayStatus == "frozen" ? "Day Freezed" :
-                             "Log Today as Learned")
+                             "Log Today\nas Learned")
                             .font(.title)
-                            .foregroundColor(.white)
+                            .bold()
+                            .multilineTextAlignment(.center) // جعل النص في الوسط
+                            .foregroundColor(selectedDayStatus == "learned" ? Color.orange :
+                                             selectedDayStatus == "frozen" ? Color.blue :
+                                             Color.black) // تغيير لون النص بناءً على الحالة
                     }
                     
                     // زر لتجميد اليوم
                     Button(action: freezeToday) {
                         Text("Freeze day")
                             .frame(width: 162, height: 52)
-                            .background(Color.blue)
+                            .background(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.gray : Color.cyan)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
@@ -198,8 +209,8 @@ struct LearningTrackerView: View {
                 }
                 .padding(.top, 30)
                 .onAppear {
-                    setInitialWeek()
-                    resetStreakIfNeeded()
+                    setInitialWeek() // تعيين الأسبوع الحالي عند فتح الشاشة
+                    resetStreakIfNeeded() // إعادة تعيين الأيام المتتالية إذا لزم الأمر
                 }
                 .onChange(of: learningSubject) { _ in
                     resetStreak() // إعادة تعيين السلسلة عند تغيير الهدف
@@ -211,31 +222,31 @@ struct LearningTrackerView: View {
         }
     }
     
-    // تعيين الأسبوع الذي يحتوي على اليوم الحالي عند فتح الشاشة
+    // تحديد اليوم الحالي عند فتح الشاشة
     private func setInitialWeek() {
-        let today = calendar.component(.day, from: Date())
-        currentWeek = (today - 1) / 7
+        currentDate = Date()
     }
     
-    // عرض أيام الأسبوع بناءً على الأسبوع الحالي
-    private func weekDays() -> [Int] {
-        let startDay = currentWeek * 7 + 1
-        return Array(startDay..<startDay + 7)
+    // عرض أيام الأسبوع بحيث يكون اليوم الحالي في المنتصف
+    private func weekDays() -> [Date] {
+        let today = calendar.startOfDay(for: currentDate)
+        let middleIndex = 3 // اجعل اليوم الحالي في المنتصف (المؤشر 3 في قائمة تتضمن 7 أيام)
+        return (0..<7).compactMap { offset in
+            calendar.date(byAdding: .day, value: offset - middleIndex, to: today)
+        }
     }
     
-    // التنقل بين الأسابيع
+    // التنقل إلى الأسبوع التالي مع تحديث التاريخ الحالي
     private func nextWeek() {
-        if currentWeek < weeksInMonth - 1 {
-            currentWeek += 1
-        }
+        currentDate = calendar.date(byAdding: .weekOfMonth, value: 1, to: currentDate) ?? currentDate
     }
     
+    // التنقل إلى الأسبوع السابق مع تحديث التاريخ الحالي
     private func previousWeek() {
-        if currentWeek > 0 {
-            currentWeek -= 1
-        }
+        currentDate = calendar.date(byAdding: .weekOfMonth, value: -1, to: currentDate) ?? currentDate
     }
 
+    // تحديد الحد الأقصى للأيام المجمدة بناءً على المدة
     private func availableFreezes() -> Int {
         switch learningDuration {
         case "Week":
@@ -248,22 +259,41 @@ struct LearningTrackerView: View {
             return 0
         }
     }
-    
-    private func dayBackground(for day: Int) -> Color {
-        let status = dayStatuses[day] ?? selectedDayStatus
-        return isToday(day) ? (status == "learned" ? Color.orange.opacity(0.5) : status == "frozen" ? Color.blue.opacity(0.5) : Color.clear) : Color.clear
+    // دالة الانتقال إلى الشهر التالي
+    private func nextMonth() {
+        currentDate = calendar.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
     }
     
-    private func dayForeground(for day: Int) -> Color {
-        let status = dayStatuses[day] ?? selectedDayStatus
-        return isToday(day) ? (status == "learned" ? Color.orange : status == "frozen" ? Color.blue : Color.white) : Color.white
+    // تحديد لون خلفية اليوم بناءً على حالته
+    private func dayBackground(for date: Date) -> Color {
+        let status = dayStatuses[calendar.component(.day, from: date)] ?? "log"
+        
+        if isToday(date) {
+            return status == "learned" ? Color.orange : status == "frozen" ? Color.blue : Color.clear
+        } else {
+            return status == "learned" ? Color.orange.opacity(0.5) : status == "frozen" ? Color.blue.opacity(0.5) : Color.clear
+        }
+    }
+    
+    // تحديد لون النص بناءً على حالة اليوم
+    private func dayForeground(for date: Date) -> Color {
+        let status = dayStatuses[calendar.component(.day, from: date)] ?? "log"
+        
+        if isToday(date) {
+            return .white
+        } else {
+            return status == "learned" ? Color.orange : status == "frozen" ? Color.blue : .white
+        }
     }
 
-    private func dayOfWeek(for day: Int) -> String {
-        let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
-        return days[(day - 1) % 7]
+    // عرض اسم اليوم باختصار، مثل: "SAT"
+    private func dayOfWeek(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return formatter.string(from: date).uppercased()
     }
     
+    // تسجيل اليوم الحالي كتعلم
     private func logTodayAsLearned() {
         let today = calendar.component(.day, from: Date())
         selectedDayStatus = "learned"
@@ -271,6 +301,7 @@ struct LearningTrackerView: View {
         streakDays += 1
     }
     
+    // تجميد اليوم الحالي إذا لم يتم تجاوز الحد الأقصى
     private func freezeToday() {
         let today = calendar.component(.day, from: Date())
         if frozenDays < availableFreezes() {
@@ -280,25 +311,34 @@ struct LearningTrackerView: View {
         }
     }
     
+    // تبديل الحالة اليومية بين "تعلم"، "تجميد"، أو "تسجيل"
+    private func toggleDayStatus() {
+        if selectedDayStatus == "log" {
+            logTodayAsLearned()
+        } else if selectedDayStatus == "learned" {
+            freezeToday()
+        } else {
+            selectedDayStatus = "log"
+        }
+    }
+
+    // إعادة تعيين سلسلة الأيام المتتالية إذا مرّ وقت طويل دون تسجيل
     private func resetStreakIfNeeded() {
-        // إعادة تعيين السلسلة إذا مر أكثر من 32 ساعة
         if Date().timeIntervalSince(currentDate) > 32 * 60 * 60 {
             resetStreak()
         }
     }
     
+    // إعادة تعيين سلسلة الأيام المتتالية إلى الصفر
     private func resetStreak() {
         streakDays = 0
     }
     
-    // التحقق مما إذا كان اليوم الحالي هو اليوم المحدد
-    private func isToday(_ day: Int) -> Bool {
-        let today = calendar.component(.day, from: Date())
-        return day == today
+    // التحقق مما إذا كان التاريخ هو اليوم الحالي
+    private func isToday(_ date: Date) -> Bool {
+        return calendar.isDateInToday(date)
     }
 }
-
-
 
 struct LearningTrackerView_Previews: PreviewProvider {
     static var previews: some View {
