@@ -32,7 +32,7 @@ struct LearningTrackerView: View {
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all) // خلفية سوداء تغطي كامل الشاشة
 
-                VStack(spacing: 20) {
+                VStack(spacing: 5) {
                     // الجزء العلوي (التاريخ والهدف)
                     VStack(alignment: .leading, spacing: 5) {
                         // عرض اليوم الحالي مع التاريخ الكامل باستخدام التنسيق المحدد
@@ -169,34 +169,40 @@ struct LearningTrackerView: View {
                         }
                         .padding()
                     }
-                    
-                    // الدائرة الكبيرة لتسجيل التعلم أو عرض الحالة
-                    ZStack {
-                        Circle()
-                            .fill(selectedDayStatus == "learned" ? Color.darkorange2 :
-                                  selectedDayStatus == "frozen" ? Color.darkblue2 :
-                                  Color.orange2)
-                            .frame(width: 320, height: 320)
-                            .contentShape(Circle()) // ضبط منطقة التفاعل لتشمل الدائرة بأكملها
-                            .onTapGesture {
-                                if selectedDayStatus == "log" { // يسمح بالضغط فقط إذا كانت الحالة "log"
-                                    logTodayAsLearned()
-                                }
+                    VStack{VStack {
+                       // Spacer() // يدفع الزر إلى أسفل الشاشة
+
+                        Button(action: {
+                            if selectedDayStatus == "log" { // يسمح بالضغط فقط إذا كانت الحالة "log"
+                                logTodayAsLearned()
                             }
-                        
-                        // عرض النص بناءً على الحالة اليومية الحالية
-                        Text(selectedDayStatus == "learned" ? "Today \n Learned" :
-                              selectedDayStatus == "frozen" ? "Day \n Freezed" :
-                              "Log Today\nas Learned")
-                            .font(.system(size: 41, weight: .semibold, design: .default))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(selectedDayStatus == "learned" ? Color.orange2 :
-                                             selectedDayStatus == "frozen" ? Color.blue2 :
-                                             Color.black)
-                    }
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(selectedDayStatus == "learned" ? Color.darkorange2 :
+                                          selectedDayStatus == "frozen" ? Color.darkblue2 :
+                                          Color.orange2)
+                                    .frame(width: 320, height: 320)
+                                
+                                // عرض النص بناءً على الحالة اليومية الحالية
+                                Text(selectedDayStatus == "learned" ? "Today \n Learned" :
+                                      selectedDayStatus == "frozen" ? "Day \n Freezed" :
+                                      "Log Today\nas Learned")
+                                    .font(.system(size: 41, weight: .semibold, design: .default))
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(selectedDayStatus == "learned" ? Color.orange2 :
+                                                     selectedDayStatus == "frozen" ? Color.blue2 :
+                                                     Color.black)
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle()) // لضمان أن الزر يظهر بدون أي تأثير افتراضي
+
+                        Spacer().frame(height: 30) // مسافة صغيرة من أسفل الشاشة إذا أردت ذلك
+                    }}
                     // زر لتجميد اليوم
                     Button(action: freezeToday) {
                         Text("Freeze day")
+                            .bold()
                             .frame(width: 162, height: 52)
                             .background(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.darkgrey2 : Color.babyblue)
                             .foregroundColor(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.white : Color.blue2)
@@ -220,7 +226,7 @@ struct LearningTrackerView: View {
                     resetStreak() // إعادة تعيين السلسلة عند تغيير المدة
                 }
             }
-            .navigationBarBackButtonHidden(true)
+            .navigationBarBackButtonHidden(false)
         }
     }
     
