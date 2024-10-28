@@ -173,19 +173,19 @@ struct LearningTrackerView: View {
                     // الدائرة الكبيرة لتسجيل التعلم أو عرض الحالة
                     ZStack {
                         Circle()
-                            .fill(selectedDayStatus == "learned" ? Color.orange.opacity(0.5) :
-                                  selectedDayStatus == "frozen" ? Color.blue.opacity(0.5) :
-                                  Color.orange)
+                            .fill(selectedDayStatus == "learned" ? Color.darkorange2 :
+                                  selectedDayStatus == "frozen" ? Color.darkblue2:
+                                  Color.orange2)
                             .frame(width: 320, height: 320)
                             .onTapGesture {
                                 toggleDayStatus() // تغيير حالة اليوم بين التعلم والتجميد
                             }
                         
                         // عرض النص بناءً على الحالة اليومية الحالية
-                        Text(selectedDayStatus == "learned" ? "Learned Today" :
-                             selectedDayStatus == "frozen" ? "Day Freezed" :
+                        Text(selectedDayStatus == "learned" ? "Learned \n Today" :
+                             selectedDayStatus == "frozen" ? "Day \n Freezed" :
                              "Log Today\nas Learned")
-                            .font(.title)
+                        .font(.largeTitle)
                             .bold()
                             .multilineTextAlignment(.center) // جعل النص في الوسط
                             .foregroundColor(selectedDayStatus == "learned" ? Color.orange :
@@ -197,8 +197,8 @@ struct LearningTrackerView: View {
                     Button(action: freezeToday) {
                         Text("Freeze day")
                             .frame(width: 162, height: 52)
-                            .background(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.gray : Color.cyan)
-                            .foregroundColor(.white)
+                            .background(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.gray : Color.babyblue)
+                            .foregroundColor(selectedDayStatus == "learned" || selectedDayStatus == "frozen" ? Color.white : Color.blue2)
                             .cornerRadius(10)
                     }
                     
@@ -269,9 +269,9 @@ struct LearningTrackerView: View {
         let status = dayStatuses[calendar.component(.day, from: date)] ?? "log"
         
         if isToday(date) {
-            return status == "learned" ? Color.orange : status == "frozen" ? Color.blue : Color.clear
+            return status == "learned" ? Color.orange : status == "frozen" ? Color.blue2 : Color.clear
         } else {
-            return status == "learned" ? Color.orange.opacity(0.5) : status == "frozen" ? Color.blue.opacity(0.5) : Color.clear
+            return status == "learned" ? Color.darkorange2.opacity(0.5) : status == "frozen" ? Color.darkblue2.opacity(0.5) : Color.clear
         }
     }
     
