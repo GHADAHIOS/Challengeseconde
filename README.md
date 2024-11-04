@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Tracker App 📖 🔥</title>
+  
 </head>
 <body>
 
@@ -30,28 +30,16 @@
     <li><strong>Use Freeze Days for Flexibility:</strong> When you need a break, apply a “Freeze Day” without losing your streak. This feature helps maintain flexibility while keeping you on track.</li>
 </ol>
 
-<h2>Installation</h2>
-<ol>
-    <li><strong>Clone the repository:</strong>
-        <pre><code>git clone https://github.com/yourusername/LearningTracker.git</code></pre>
-    </li>
-    <li><strong>Open the project in Xcode:</strong> Open the <code>.xcodeproj</code> file in Xcode and ensure your environment is set up for SwiftUI development.</li>
-    <li><strong>Build and run:</strong> Select your target device and run the app.</li>
-</ol>
 
 <h2>Contributing</h2>
 <p>
     If you’d like to contribute to <strong>Learning Tracker</strong>, feel free to fork the repository, make your changes, and submit a pull request. We welcome all ideas for improving functionality, UI/UX, and new feature suggestions.
 </p>
 
-<h2>License</h2>
-<p>
-    This project is licensed under the MIT License. See the LICENSE file for more details.
-</p>
 
 <h2>Contact</h2>
 <p>
-    For any questions or feedback, feel free to reach out to us at <a href="mailto:your-email@example.com">your-email@example.com</a>.
+    For any questions or feedback, feel free to reach out to us at <a href="ghadaalenzi515@gmail.com">your-email@example.com</a>.
 </p>
 
 </body>
