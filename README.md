@@ -9,6 +9,9 @@
 
 <h1>Learning Tracker App 📖 🔥</h1>
 
+
+![Image 02-05-1446 AH at 11 10 AM](https://github.com/user-attachments/assets/4a3e9238-91df-46ed-99c5-e326df293d71)
+
 <h2>Overview</h2>
 <p>
     The <strong>Learning Tracker</strong> app is a productivity tool designed to help users track their daily learning habits, maintain consistent learning streaks, and provide flexibility through “frozen days” that allow for occasional breaks without breaking the streak. Built with <strong>SwiftUI</strong>, the app combines a clean, interactive design with features that encourage regular engagement and goal setting.
