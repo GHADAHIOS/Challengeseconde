@@ -31,15 +31,11 @@
 </ol>
 
 
-<h2>Contributing</h2>
-<p>
-    If you’d like to contribute to <strong>Learning Tracker</strong>, feel free to fork the repository, make your changes, and submit a pull request. We welcome all ideas for improving functionality, UI/UX, and new feature suggestions.
-</p>
 
 
 <h2>Contact</h2>
 <p>
-    For any questions or feedback, feel free to reach out to us at <a href="ghadaalenzi515@gmail.com">your-email@example.com</a>.
+    For any questions or feedback, feel free to reach out to us at <a href="ghadaalenzi515@gmail.com">ghadaalenzi515@gmail.com</a>.
 </p>
 
 </body>
