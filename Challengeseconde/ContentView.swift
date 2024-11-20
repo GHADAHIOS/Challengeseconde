@@ -8,7 +8,7 @@ struct ContentView: View {
             ZStack {
                 Color.black.ignoresSafeArea()
                 
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 13) {
                     HStack {
                         Spacer()
                         iconView
@@ -20,12 +20,12 @@ struct ContentView: View {
                         .font(.largeTitle)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
-                        .padding(.bottom, 4)
                     
                     Text("This app will help you learn everyday")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding(.bottom, 20)
+                        .padding(.top, 0)
+                        .baselineOffset(20)
                     
                     Text("I want to learn")
                         .font(.title3)
@@ -54,6 +54,7 @@ struct ContentView: View {
                 .padding(.horizontal, 20)
             }
             .navigationBarHidden(true)
+          //  .navigationBarBackButtonHidden(true)
         }
     }
 }
@@ -76,12 +77,12 @@ private extension ContentView {
                 .padding(.vertical, 8)
                 .background(Color.black)
                 .foregroundColor(.white)
-                .overlay(Rectangle().frame(height: 1).foregroundColor(.gray), alignment: .bottom)
-                .accentColor(.orange)
+                .overlay(Rectangle().frame(height: 1).foregroundColor(.darkgrey2), alignment: .bottom)
+                .accentColor(.orange2)
             
             if viewModel.inputText.isEmpty {
                 Text("swift")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.darkgrey2)
                     .padding(.leading, 5)
             }
         }
@@ -94,10 +95,10 @@ private extension ContentView {
                     viewModel.setDuration(duration)
                 }) {
                     Text(duration)
-                        .foregroundColor(viewModel.learningDuration == duration ? .black : .orange)
+                        .foregroundColor(viewModel.learningDuration == duration ? .black : .orange2)
                         .fontWeight(viewModel.learningDuration == duration ? .bold : .regular)
                         .padding(10)
-                        .background(viewModel.learningDuration == duration ? Color(red: 1.0, green: 159/255, blue: 10/255) : Color(red: 44/255, green: 44/255, blue: 49/255))
+                        .background(viewModel.learningDuration == duration ? Color.orange2 : Color.darkgrey2)
                         .cornerRadius(8)
                 }
             }
@@ -116,7 +117,7 @@ private extension ContentView {
         }
         .padding()
         .frame(width: 151, height: 52)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color(red: 1.0, green: 159/255, blue: 10/255)))
+        .background(RoundedRectangle(cornerRadius: 8).fill(Color.orange2))
     }
 }
 
